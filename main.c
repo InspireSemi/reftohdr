@@ -19,8 +19,8 @@ int main (int argc, char *argv[])
     FILE* out;
     FILE* in;
     // input buffer to grab and then process referecne_output data
-    char indata[65];
-    char outdata[100];
+    char indata[64];
+    char outdata[150];
     unsigned int count = 0;
 
     if (argc < 3 )
@@ -57,7 +57,6 @@ int main (int argc, char *argv[])
         printf("Read = %s", indata);
         sprintf(outdata, "#define %s%d 0x", argv[3], count);
         count++;
-        //strcat (indata, "\n");
         strcat(outdata, indata);
         printf("Output = %s", outdata);
         fputs (outdata, out);
