@@ -18,8 +18,12 @@ int main (int argc, char *argv[])
 {
     FILE* out;
     FILE* in;
-    // input buffer to grab and then process referecne_output data
+    // input buffer to grab and then process referecne_output data   
     char indata[64];
+#ifndef XLEN32
+    char lowerindata[64];
+    char upperindata[64];        
+ #endif   
     char outdata[150];
     unsigned int count = 0;
 
@@ -51,6 +55,7 @@ int main (int argc, char *argv[])
         exit(1);
     }
 
+#ifdef XLEN32
     // grab the next line in the reference_output file. 
     while ( fgets( indata, MAXCHAR, in ) != NULL)
     {
@@ -61,6 +66,22 @@ int main (int argc, char *argv[])
         printf("Output = %s", outdata);
         fputs (outdata, out);
     }
+#else
+    // grab the next line in the reference_output file. 
+    while ( fgets( lowerindata, MAXCHAR, in ) != NULL  && fgets( upperindata, MAXCHAR, in ) != NULL )
+    {
+        memset(indata, 0x00, 64);
+        strncat(indata, upperindata, 8);
+        strcat(indata, lowerindata);
+        printf("Read = %s", indata);
+        sprintf(outdata, "#define %s%d 0x", argv[3], count);
+        count++;
+        strcat(outdata, indata);
+        printf("Output = %s", outdata);
+        fputs (outdata, out);
+    }
+#endif
+
 
     printf("Total Written %d\n", count);
 
